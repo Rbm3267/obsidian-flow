@@ -66,7 +66,7 @@ export class IngestionProcessor {
       '---',
     ].filter(Boolean).join('\n');
 
-    let body = `${frontmatter}\n\n## Executive Summary\n${enriched.summary}\n\n`;
+    let body = `${frontmatter}\n\n## Summary\n${enriched.summary}\n\n`;
     
     if (enriched.keyDecisions.length > 0) {
       body += `## Key Decisions\n${enriched.keyDecisions.map(d => `- ${d}`).join('\n')}\n\n`;

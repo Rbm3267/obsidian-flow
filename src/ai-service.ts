@@ -46,14 +46,14 @@ export class AIService {
   }
 
   async enrichMeeting(rawTranscript: string, filename: string): Promise<MeetingEnrichmentResult> {
-    const prompt = `You are an executive intelligence assistant. Analyze this raw meeting notes/transcript and extract key structured information.
-Return ONLY valid JSON matching this schema:
+    const prompt = `Analyze this meeting note or transcript and extract the key information.
+Return valid JSON matching this schema:
 {
-  "title": "Clear concise meeting title",
+  "title": "Concise meeting title",
   "date": "YYYY-MM-DD",
   "account": "Client or company name if mentioned, or null",
   "attendees": ["Person 1", "Person 2"],
-  "summary": "3-4 sentence high-level executive summary",
+  "summary": "3-4 sentence summary of what was discussed",
   "keyDecisions": ["Decision 1", "Decision 2"],
   "actionItems": ["Action item 1 (@Owner)", "Action item 2"],
   "tags": ["meeting", "relevant-topic"]

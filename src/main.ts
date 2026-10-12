@@ -110,7 +110,7 @@ export default class ObsidianFlowPlugin extends Plugin {
         '---',
       ].filter(Boolean).join('\n');
 
-      const body = `${frontmatter}\n\n## Executive Summary\n${enriched.summary}\n\n## Key Decisions\n${enriched.keyDecisions.map(d => `- ${d}`).join('\n')}\n\n## Action Items\n${enriched.actionItems.map(a => `- [ ] ${a}`).join('\n')}\n`;
+      const body = `${frontmatter}\n\n## Summary\n${enriched.summary}\n\n## Key Decisions\n${enriched.keyDecisions.map(d => `- ${d}`).join('\n')}\n\n## Action Items\n${enriched.actionItems.map(a => `- [ ] ${a}`).join('\n')}\n`;
 
       await this.app.vault.modify(file, body);
       new Notice(`VaultFlow: Successfully enriched ${file.basename}!`);
