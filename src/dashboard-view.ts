@@ -1,4 +1,4 @@
-import { App, ItemView, WorkspaceLeaf } from 'obsidian';
+import { ItemView, WorkspaceLeaf } from 'obsidian';
 import { ObsidianFlowSettings } from './types';
 
 export const VIEW_TYPE_OBSIDIANFLOW_DASHBOARD = 'vaultflow-dashboard';

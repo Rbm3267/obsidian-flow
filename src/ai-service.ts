@@ -89,11 +89,11 @@ ${rawTranscript}`;
         title: typeof parsed.title === 'string' ? parsed.title : fallbackTitle.replace(/\.md$/, ''),
         date: typeof parsed.date === 'string' ? parsed.date : new Date().toISOString().slice(0, 10),
         account: typeof parsed.account === 'string' ? parsed.account : undefined,
-        attendees: Array.isArray(parsed.attendees) ? (parsed.attendees.filter(a => typeof a === 'string') as string[]) : [],
+        attendees: Array.isArray(parsed.attendees) ? parsed.attendees.filter((a): a is string => typeof a === 'string') : [],
         summary: typeof parsed.summary === 'string' ? parsed.summary : 'Summary unavailable.',
-        actionItems: Array.isArray(parsed.actionItems) ? (parsed.actionItems.filter(a => typeof a === 'string') as string[]) : [],
-        keyDecisions: Array.isArray(parsed.keyDecisions) ? (parsed.keyDecisions.filter(d => typeof d === 'string') as string[]) : [],
-        tags: Array.isArray(parsed.tags) ? (parsed.tags.filter(t => typeof t === 'string') as string[]) : ['meeting'],
+        actionItems: Array.isArray(parsed.actionItems) ? parsed.actionItems.filter((a): a is string => typeof a === 'string') : [],
+        keyDecisions: Array.isArray(parsed.keyDecisions) ? parsed.keyDecisions.filter((d): d is string => typeof d === 'string') : [],
+        tags: Array.isArray(parsed.tags) ? parsed.tags.filter((t): t is string => typeof t === 'string') : ['meeting'],
       };
     } catch {
       return {
