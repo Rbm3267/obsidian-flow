@@ -1,11 +1,11 @@
-# ObsidianFlow
+# VaultFlow
 
 > Intelligent note ingestion, meeting synthesis, account intelligence, and knowledge graphs powered by your choice of LLM.
 
 [![Obsidian Plugin](https://img.shields.io/badge/Obsidian-Plugin-7C3AED?logo=obsidian&logoColor=white)](https://obsidian.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-ObsidianFlow bridges automated meeting transcription with executive knowledge management. It ingests raw voice transcripts and notes, extracts action items and strategic decisions, and automatically links accounts, attendees, and related knowledge graphs using your favorite LLM.
+VaultFlow bridges automated meeting transcription with executive knowledge management. It ingests raw voice transcripts and notes, extracts action items and strategic decisions, and automatically links accounts, attendees, and related knowledge graphs using your favorite LLM.
 
 ---
 
@@ -29,15 +29,23 @@ ObsidianFlow bridges automated meeting transcription with executive knowledge ma
 
 ## 🚀 Installation
 
-### Via BRAT
-1. Install the **BRAT** plugin in Obsidian.
-2. Add Beta plugin: `Rbm3267/obsidian-flow`.
-3. Enable **ObsidianFlow** in Settings > Community Plugins.
+### From Obsidian Community Plugins (Recommended)
+1. In Obsidian, open **Settings** → **Community plugins**.
+2. Ensure **Restricted mode** is turned off.
+3. Click **Browse** and search for **VaultFlow**.
+4. Click **Install**, then click **Enable**.
+
+### Beta Testing via BRAT
+To receive early pre-release builds before directory updates:
+1. Install and enable the **BRAT** community plugin in Obsidian.
+2. Open BRAT settings and click **Add Beta plugin**.
+3. Enter `Rbm3267/obsidian-flow`.
+4. Enable **VaultFlow** under Community Plugins.
 
 ### Manual Installation
 1. Download `manifest.json`, `main.js`, and `styles.css` from the latest [Release](https://github.com/Rbm3267/obsidian-flow/releases).
-2. Place them into `<vault>/.obsidian/plugins/obsidian-flow/`.
-3. Reload Obsidian and enable in Settings.
+2. Place them into `<vault>/.obsidian/plugins/vaultflow/`.
+3. Reload Obsidian and enable **VaultFlow** in Settings > Community Plugins.
 
 ---
 
