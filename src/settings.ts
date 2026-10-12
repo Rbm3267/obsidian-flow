@@ -14,13 +14,9 @@ export class ObsidianFlowSettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    new Setting(containerEl)
-      .setName('VaultFlow Configuration')
-      .setHeading();
-
     // ── Pipeline Folder Paths ─────────────────────────────
     new Setting(containerEl)
-      .setName('Workflow Directories')
+      .setName('Workflow directories')
       .setHeading();
 
     new Setting(containerEl)
@@ -76,7 +72,7 @@ export class ObsidianFlowSettingTab extends PluginSettingTab {
 
     // ── AI Engine Provider ────────────────────────────────
     new Setting(containerEl)
-      .setName('AI Synthesis Engine')
+      .setName('AI engine')
       .setHeading();
 
     new Setting(containerEl)

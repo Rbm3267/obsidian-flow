@@ -120,8 +120,8 @@ export default class ObsidianFlowPlugin extends Plugin {
   }
 
   async loadSettings() {
-    const loaded = await this.loadData();
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, (loaded && typeof loaded === 'object') ? loaded : {});
+    const loaded: unknown = await this.loadData();
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, (loaded && typeof loaded === 'object') ? (loaded as Partial<ObsidianFlowSettings>) : {});
   }
 
   async saveSettings() {
