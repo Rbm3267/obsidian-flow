@@ -1,6 +1,6 @@
 {
   "id": "vaultflow",
-  "name": "ObsidianFlow",
+  "name": "VaultFlow",
   "version": "1.0.0",
   "minAppVersion": "1.0.0",
   "description": "Intelligent note ingestion, meeting synthesis, account intelligence, and knowledge graphs powered by your choice of LLM.",
