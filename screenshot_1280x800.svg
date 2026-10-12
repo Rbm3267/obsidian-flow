@@ -1,0 +1,178 @@
+<svg width="1280" height="800" viewBox="0 0 1280 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background Gradients -->
+    <linearGradient id="vf-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050a14"/>
+      <stop offset="50%" stop-color="#081122"/>
+      <stop offset="100%" stop-color="#040810"/>
+    </linearGradient>
+    <linearGradient id="card-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0e1a32" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#091224" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="blue-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="purple-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc"/>
+      <stop offset="100%" stop-color="#9333ea"/>
+    </linearGradient>
+    <filter id="soft-shadow" x="-8%" y="-8%" width="116%" height="116%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.55"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="800" fill="url(#vf-bg)"/>
+
+  <!-- Ambient Glows -->
+  <circle cx="180" cy="180" r="300" fill="#38bdf8" opacity="0.07" filter="blur(70px)"/>
+  <circle cx="1100" cy="240" r="320" fill="#a855f7" opacity="0.06" filter="blur(80px)"/>
+
+  <!-- Obsidian Window Frame -->
+  <g filter="url(#soft-shadow)">
+    <!-- Window Outer Shell -->
+    <rect x="40" y="30" width="1200" height="740" rx="16" fill="#090f1d" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+
+    <!-- Window Title Bar -->
+    <rect x="40" y="30" width="1200" height="42" rx="16" fill="#0c152a"/>
+    <!-- Window Controls -->
+    <circle cx="68" cy="51" r="6" fill="#ef4444" opacity="0.85"/>
+    <circle cx="88" cy="51" r="6" fill="#f59e0b" opacity="0.85"/>
+    <circle cx="108" cy="51" r="6" fill="#10b981" opacity="0.85"/>
+    <!-- Breadcrumb -->
+    <text x="640" y="56" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12" font-weight="500" text-anchor="middle">Knowledge Vault · VaultFlow Intelligence Hub</text>
+
+    <!-- Sidebar Mini Rail -->
+    <rect x="40" y="72" width="56" height="698" fill="#060b16"/>
+    <!-- Nav Icons -->
+    <rect x="56" y="96" width="24" height="24" rx="6" fill="rgba(56,189,248,0.15)"/>
+    <circle cx="68" cy="108" r="5" stroke="#38bdf8" stroke-width="2" fill="none"/>
+    <path d="M68 144 V160 M60 152 H76" stroke="#64748b" stroke-width="1.8" stroke-linecap="round"/>
+    <rect x="61" y="196" width="14" height="14" rx="3" stroke="#64748b" stroke-width="1.8" fill="none"/>
+
+    <!-- Main Content Area -->
+    <g transform="translate(120, 92)">
+      <!-- Header Area -->
+      <g>
+        <text x="0" y="32" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Outfit', 'Inter', sans-serif" font-size="26" font-weight="800" letter-spacing="-0.02em">Account &amp; Project Intelligence</text>
+        <text x="0" y="54" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="13">4 tracked initiatives · 18 structured synthesis notes indexed</text>
+        
+        <!-- One-Click Ingest Inbox Button -->
+        <rect x="910" y="16" width="170" height="36" rx="8" fill="url(#blue-glow)"/>
+        <path d="M928 34 L934 40 L944 28" stroke="#060b16" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="954" y="39" fill="#060b16" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12.5" font-weight="700">Ingest 00_Inbox</text>
+      </g>
+
+      <!-- Account / Project Cards Grid (Row 1) -->
+      <g transform="translate(0, 80)">
+        <!-- Card 1: Project Aurora -->
+        <rect x="0" y="0" width="255" height="124" rx="12" fill="url(#card-grad)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <text x="18" y="32" fill="#ffffff" font-size="16" font-weight="700">Project Aurora</text>
+        <rect x="195" y="18" width="44" height="18" rx="9" fill="rgba(16,185,129,0.15)"/>
+        <text x="217" y="31" fill="#10b981" font-size="10" font-weight="700" text-anchor="middle">ACTIVE</text>
+        <text x="18" y="60" fill="#94a3b8" font-size="12">Design system tokens &amp; UI kit</text>
+        <line x1="18" y1="78" x2="237" y2="78" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <text x="18" y="102" fill="#64748b" font-size="11">8 meetings</text>
+        <circle cx="82" cy="98" r="2" fill="#64748b"/>
+        <text x="92" y="102" fill="#38bdf8" font-size="11" font-weight="600">3 open tasks</text>
+
+        <!-- Card 2: Atlas CLI -->
+        <rect x="275" y="0" width="255" height="124" rx="12" fill="url(#card-grad)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <text x="293" y="32" fill="#ffffff" font-size="16" font-weight="700">Atlas CLI</text>
+        <rect x="470" y="18" width="44" height="18" rx="9" fill="rgba(16,185,129,0.15)"/>
+        <text x="492" y="31" fill="#10b981" font-size="10" font-weight="700" text-anchor="middle">ACTIVE</text>
+        <text x="293" y="60" fill="#94a3b8" font-size="12">Developer toolchain &amp; scripts</text>
+        <line x1="293" y1="78" x2="512" y2="78" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <text x="293" y="102" fill="#64748b" font-size="11">5 meetings</text>
+        <circle cx="357" cy="98" r="2" fill="#64748b"/>
+        <text x="367" y="102" fill="#38bdf8" font-size="11" font-weight="600">4 open tasks</text>
+
+        <!-- Card 3: Helios Engine -->
+        <rect x="550" y="0" width="255" height="124" rx="12" fill="url(#card-grad)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <text x="568" y="32" fill="#ffffff" font-size="16" font-weight="700">Helios Engine</text>
+        <rect x="745" y="18" width="44" height="18" rx="9" fill="rgba(16,185,129,0.15)"/>
+        <text x="767" y="31" fill="#10b981" font-size="10" font-weight="700" text-anchor="middle">ACTIVE</text>
+        <text x="568" y="60" fill="#94a3b8" font-size="12">Real-time telemetry &amp; sync</text>
+        <line x1="568" y1="78" x2="787" y2="78" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <text x="568" y="102" fill="#64748b" font-size="11">6 meetings</text>
+        <circle cx="632" cy="98" r="2" fill="#64748b"/>
+        <text x="642" y="102" fill="#38bdf8" font-size="11" font-weight="600">2 open tasks</text>
+
+        <!-- Card 4: Starlight Docs -->
+        <rect x="825" y="0" width="255" height="124" rx="12" fill="url(#card-grad)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <text x="843" y="32" fill="#ffffff" font-size="16" font-weight="700">Starlight Docs</text>
+        <rect x="1010" y="18" width="54" height="18" rx="9" fill="rgba(56,189,248,0.15)"/>
+        <text x="1037" y="31" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">SHIPPED</text>
+        <text x="843" y="60" fill="#94a3b8" font-size="12">Interactive developer docs</text>
+        <line x1="843" y1="78" x2="1062" y2="78" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <text x="843" y="102" fill="#64748b" font-size="11">4 meetings</text>
+        <circle cx="907" cy="98" r="2" fill="#64748b"/>
+        <text x="917" y="102" fill="#10b981" font-size="11" font-weight="600">0 open tasks</text>
+      </g>
+
+      <!-- Bottom Split: Left = Recent Ingested Notes, Right = Synthesized Note Preview -->
+      <g transform="translate(0, 226)">
+        <!-- Left: Recent Synthesized Meetings -->
+        <rect x="0" y="0" width="530" height="400" rx="14" fill="url(#card-grad)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <text x="22" y="32" fill="#ffffff" font-size="15" font-weight="700">Recent Synthesized Notes</text>
+        <text x="508" y="32" fill="#38bdf8" font-size="12" font-weight="600" text-anchor="end">raw/meetings/</text>
+
+        <g transform="translate(20, 52)">
+          <!-- Note 1 -->
+          <rect x="0" y="0" width="490" height="64" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <text x="14" y="24" fill="#38bdf8" font-size="11" font-family="'SF Mono', monospace">2026-10-12</text>
+          <text x="14" y="44" fill="#f8fafc" font-size="13" font-weight="600">Project Aurora · Component State &amp; Token Spec Review</text>
+          <text x="476" y="34" fill="#10b981" font-size="11" text-anchor="end">2 tasks extracted</text>
+
+          <!-- Note 2 -->
+          <rect x="0" y="74" width="490" height="64" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <text x="14" y="98" fill="#38bdf8" font-size="11" font-family="'SF Mono', monospace">2026-10-10</text>
+          <text x="14" y="118" fill="#f8fafc" font-size="13" font-weight="600">Atlas CLI · Terminal Color Themes &amp; Autocomplete</text>
+          <text x="476" y="108" fill="#10b981" font-size="11" text-anchor="end">3 tasks extracted</text>
+
+          <!-- Note 3 -->
+          <rect x="0" y="148" width="490" height="64" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <text x="14" y="172" fill="#38bdf8" font-size="11" font-family="'SF Mono', monospace">2026-10-08</text>
+          <text x="14" y="192" fill="#f8fafc" font-size="13" font-weight="600">Helios Engine · WebSocket Reconnect &amp; Backoff Strategy</text>
+          <text x="476" y="182" fill="#10b981" font-size="11" text-anchor="end">1 task extracted</text>
+
+          <!-- Note 4 -->
+          <rect x="0" y="222" width="490" height="64" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <text x="14" y="246" fill="#38bdf8" font-size="11" font-family="'SF Mono', monospace">2026-10-05</text>
+          <text x="14" y="266" fill="#f8fafc" font-size="13" font-weight="600">Starlight Docs · Search Indexing &amp; Navigation Overhaul</text>
+          <text x="476" y="256" fill="#64748b" font-size="11" text-anchor="end">All clear</text>
+        </g>
+
+        <!-- Right: Synthesis Output Note Preview (Live Note Structure) -->
+        <rect x="550" y="0" width="530" height="400" rx="14" fill="#080e1c" stroke="rgba(56,189,248,0.2)" stroke-width="1.2"/>
+        <text x="572" y="32" fill="#ffffff" font-size="15" font-weight="700">Synthesized Note Output Preview</text>
+        <rect x="1000" y="18" width="62" height="20" rx="6" fill="rgba(167,139,250,0.15)"/>
+        <text x="1031" y="32" fill="#c084fc" font-size="10.5" font-weight="600" text-anchor="middle">Markdown</text>
+
+        <g transform="translate(572, 54)">
+          <!-- YAML Frontmatter pill -->
+          <rect x="0" y="0" width="486" height="54" rx="6" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+          <text x="12" y="20" fill="#94a3b8" font-family="'SF Mono', monospace" font-size="10.5">title: "Component State &amp; Token Spec Review" · date: 2026-10-12</text>
+          <text x="12" y="38" fill="#38bdf8" font-family="'SF Mono', monospace" font-size="10.5">account: "[[Project Aurora]]" · attendees: ["[[Alex Morgan]]", "[[Jordan Lee]]"]</text>
+
+          <!-- Section 1: Summary -->
+          <text x="0" y="80" fill="#f8fafc" font-size="13" font-weight="700">## Summary</text>
+          <text x="0" y="100" fill="#cbd5e1" font-size="12">Reviewed component variants and design token definitions across web and desktop.</text>
+          <text x="0" y="118" fill="#cbd5e1" font-size="12">Confirmed semantic color mappings for accessible high-contrast themes.</text>
+
+          <!-- Section 2: Key Decisions -->
+          <text x="0" y="152" fill="#f8fafc" font-size="13" font-weight="700">## Key Decisions</text>
+          <text x="12" y="172" fill="#94a3b8" font-size="12">• Standardize token naming structure across design tokens and CSS variables</text>
+          <text x="12" y="190" fill="#94a3b8" font-size="12">• Export platform packages via automated semantic release pipeline</text>
+
+          <!-- Section 3: Action Items -->
+          <text x="0" y="224" fill="#f8fafc" font-size="13" font-weight="700">## Action Items</text>
+          <text x="12" y="246" fill="#38bdf8" font-size="12">- [ ] Benchmark token bundle size with tree-shaking enabled 📅 2026-10-14</text>
+          <text x="12" y="266" fill="#38bdf8" font-size="12">- [ ] Update component catalog documentation with interactive states 📅 2026-10-16</text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

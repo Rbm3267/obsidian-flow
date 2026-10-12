@@ -7,6 +7,8 @@ Structured note intake, meeting summaries, and account tracking for Obsidian.
 
 VaultFlow organizes meeting notes and transcripts in your vault. It reads incoming notes, drafts summaries and action items, and connects attendees and accounts using your preferred language model.
 
+![VaultFlow Intelligence Hub Overview](./screenshot_1280x800.svg)
+
 ---
 
 ## Features
