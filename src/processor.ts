@@ -1,13 +1,16 @@
 import { App, TFile, Notice } from 'obsidian';
-import { ObsidianFlowSettings } from './types';
+import { ObsidianFlowSettings, MeetingEnrichmentResult } from './types';
 import { AIService } from './ai-service';
 
 export class IngestionProcessor {
-  constructor(private app: App, private settings: ObsidianFlowSettings, private aiService: AIService) {}
+  private app: App;
+  private settings: ObsidianFlowSettings;
+  private aiService: AIService;
 
-  updateSettings(settings: ObsidianFlowSettings) {
+  constructor(app: App, settings: ObsidianFlowSettings, aiService: AIService) {
+    this.app = app;
     this.settings = settings;
-    this.aiService.updateSettings(settings);
+    this.aiService = aiService;
   }
 
   async processInbox(): Promise<number> {
@@ -15,83 +18,66 @@ export class IngestionProcessor {
     const folder = this.app.vault.getAbstractFileByPath(inboxFolder);
 
     if (!folder) {
-      new Notice(`Inbox folder "${inboxFolder}" not found in vault.`);
+      new Notice(`VaultFlow: Inbox folder "${inboxFolder}" does not exist.`);
       return 0;
     }
 
     const files = this.app.vault.getMarkdownFiles().filter(f => f.path.startsWith(inboxFolder + '/'));
-
     if (files.length === 0) {
-      new Notice('Inbox is clear. No notes to process.');
+      new Notice('VaultFlow: Inbox is clear. No notes to process.');
       return 0;
     }
 
-    new Notice(`ObsidianFlow: Processing ${files.length} inbox note(s)...`);
-    let processedCount = 0;
+    new Notice(`VaultFlow: Processing ${files.length} inbox notes...`);
+    let count = 0;
 
     for (const file of files) {
       try {
-        await this.processSingleFile(file);
-        processedCount++;
+        await this.processSingleNote(file);
+        count++;
       } catch (err: unknown) {
-        console.error(`Error processing ${file.path}:`, err);
+        console.error(`Error processing note ${file.path}:`, err);
         new Notice(`Failed to process ${file.basename}: ${err instanceof Error ? err.message : String(err)}`);
       }
     }
 
-    new Notice(`ObsidianFlow: Successfully processed ${processedCount} note(s)!`);
-    return processedCount;
+    new Notice(`VaultFlow: Successfully processed ${count} notes.`);
+    return count;
   }
 
-  async processSingleFile(file: TFile): Promise<void> {
-    const rawContent = await this.app.vault.read(file);
-    const enriched = await this.aiService.synthesizeMeeting(rawContent, file.name);
+  private async processSingleNote(file: TFile): Promise<void> {
+    const content = await this.app.vault.read(file);
+    const enriched: MeetingEnrichmentResult = await this.aiService.enrichMeeting(content, file.basename);
 
-    // Format final markdown
-    const dateStr = enriched.date || new Date().toISOString().slice(0, 10);
-    const safeTitle = enriched.title.replace(/[\\/:*?"<>|]/g, '-').trim();
-    const destDir = this.settings.meetingsFolder || 'raw/meetings';
+    // Format destination path
+    const meetFolder = this.settings.meetingsFolder || 'raw/meetings';
+    await this.ensureFolder(meetFolder);
 
-    // Ensure target directory exists
-    await this.ensureFolder(destDir);
+    const destPath = `${meetFolder}/${file.name}`;
 
-    const destPath = `${destDir}/${dateStr} - ${safeTitle}.md`;
+    // Format synthesized note
+    const frontmatter = [
+      '---',
+      `title: "${enriched.title}"`,
+      `date: "${enriched.date}"`,
+      enriched.account ? `account: "[[${enriched.account}]]"` : null,
+      `attendees: [${enriched.attendees.map(a => `"${a}"`).join(', ')}]`,
+      `tags: [${enriched.tags.join(', ')}]`,
+      '---',
+    ].filter(Boolean).join('\n');
 
-    const attendeesFormatted = enriched.attendees.map(a => {
-      return this.settings.autoLinkEntities ? `[[${a}]]` : a;
-    }).join(', ');
+    let body = `${frontmatter}\n\n## Executive Summary\n${enriched.summary}\n\n`;
+    
+    if (enriched.keyDecisions.length > 0) {
+      body += `## Key Decisions\n${enriched.keyDecisions.map(d => `- ${d}`).join('\n')}\n\n`;
+    }
 
-    const actionItemsFormatted = enriched.actionItems.map(item => `- [ ] ${item}`).join('\n');
-    const decisionsFormatted = enriched.keyDecisions.map(d => `- ${d}`).join('\n');
+    if (enriched.actionItems.length > 0) {
+      body += `## Action Items\n${enriched.actionItems.map(a => `- [ ] ${a}`).join('\n')}\n\n`;
+    }
 
-    const body = `---
-type: meeting
-title: "${enriched.title}"
-date: ${dateStr}${enriched.account ? `\naccount: "[[${enriched.account}]]"` : ''}
-attendees: [${enriched.attendees.map(a => `"${a}"`).join(', ')}]
-tags: [${enriched.tags.map(t => `"${t}"`).join(', ')}]
----
+    body += `## Original Source Transcript\n${content}\n`;
 
-# ${enriched.title}
-
-**Date:** ${dateStr}  
-**Attendees:** ${attendeesFormatted || 'None recorded'}  
-${enriched.account ? `**Account:** [[${enriched.account}]]  \n` : ''}
-
-## Summary
-
-${enriched.summary}
-
-${enriched.keyDecisions.length > 0 ? `## Key Decisions\n\n${decisionsFormatted}\n\n` : ''}## Action Items
-
-${actionItemsFormatted || '- [ ] Follow up on meeting notes'}
-
-## Raw Notes / Transcript
-
-${rawContent}
-`;
-
-    // Create or update destination note
     const existing = this.app.vault.getAbstractFileByPath(destPath);
     if (existing instanceof TFile) {
       await this.app.vault.modify(existing, body);
@@ -99,8 +85,8 @@ ${rawContent}
       await this.app.vault.create(destPath, body);
     }
 
-    // Delete processed file from inbox
-    await this.app.vault.delete(file);
+    // Trash processed file from inbox respecting user deletion settings
+    await this.app.fileManager.trashFile(file);
   }
 
   private async ensureFolder(path: string): Promise<void> {

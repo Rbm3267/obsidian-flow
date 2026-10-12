@@ -14,10 +14,14 @@ export class ObsidianFlowSettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    containerEl.createEl('h2', { text: 'ObsidianFlow Configuration' });
+    new Setting(containerEl)
+      .setName('VaultFlow Configuration')
+      .setHeading();
 
     // ── Pipeline Folder Paths ─────────────────────────────
-    containerEl.createEl('h3', { text: 'Workflow Directories' });
+    new Setting(containerEl)
+      .setName('Workflow Directories')
+      .setHeading();
 
     new Setting(containerEl)
       .setName('Inbox Folder')
@@ -71,7 +75,9 @@ export class ObsidianFlowSettingTab extends PluginSettingTab {
       );
 
     // ── AI Engine Provider ────────────────────────────────
-    containerEl.createEl('h3', { text: 'AI Synthesis Engine' });
+    new Setting(containerEl)
+      .setName('AI Synthesis Engine')
+      .setHeading();
 
     new Setting(containerEl)
       .setName('Default AI Provider')
@@ -90,11 +96,11 @@ export class ObsidianFlowSettingTab extends PluginSettingTab {
           })
       );
 
-    // ── Provider Credentials ──────────────────────────────
+    // ── Gemini ───────────────────────────────────────────
     if (this.plugin.settings.aiProvider === 'gemini') {
       new Setting(containerEl)
         .setName('Gemini API Key')
-        .setDesc('Your Google AI Studio API key.')
+        .setDesc('Google AI Studio API Key.')
         .addText(text => {
           text.inputEl.type = 'password';
           text
@@ -108,12 +114,11 @@ export class ObsidianFlowSettingTab extends PluginSettingTab {
 
       new Setting(containerEl)
         .setName('Gemini Model')
-        .setDesc('Model for meeting synthesis.')
+        .setDesc('Select Gemini Model.')
         .addDropdown(drop =>
           drop
-            .addOption('gemini-1.5-flash', 'Gemini 1.5 Flash (Ultra Fast)')
-            .addOption('gemini-1.5-pro', 'Gemini 1.5 Pro (Deep Intelligence)')
-            .addOption('gemini-2.0-flash-exp', 'Gemini 2.0 Flash')
+            .addOption('gemini-1.5-flash', 'Gemini 1.5 Flash (Fast)')
+            .addOption('gemini-1.5-pro', 'Gemini 1.5 Pro (Deep Reasoning)')
             .setValue(this.plugin.settings.geminiModel)
             .onChange(async val => {
               this.plugin.settings.geminiModel = val;
@@ -122,10 +127,11 @@ export class ObsidianFlowSettingTab extends PluginSettingTab {
         );
     }
 
+    // ── Claude ───────────────────────────────────────────
     if (this.plugin.settings.aiProvider === 'claude') {
       new Setting(containerEl)
-        .setName('Claude API Key')
-        .setDesc('Your Anthropic API key.')
+        .setName('Anthropic API Key')
+        .setDesc('Anthropic Console API Key.')
         .addText(text => {
           text.inputEl.type = 'password';
           text
@@ -139,12 +145,11 @@ export class ObsidianFlowSettingTab extends PluginSettingTab {
 
       new Setting(containerEl)
         .setName('Claude Model')
-        .setDesc('Model for meeting synthesis.')
+        .setDesc('Select Anthropic Claude Model.')
         .addDropdown(drop =>
           drop
-            .addOption('claude-3-5-sonnet-20241022', 'Claude 3.5 Sonnet (Recommended)')
+            .addOption('claude-3-5-sonnet-20241022', 'Claude 3.5 Sonnet')
             .addOption('claude-3-5-haiku-20241022', 'Claude 3.5 Haiku')
-            .addOption('claude-3-opus-20240229', 'Claude 3 Opus')
             .setValue(this.plugin.settings.claudeModel)
             .onChange(async val => {
               this.plugin.settings.claudeModel = val;
@@ -153,10 +158,11 @@ export class ObsidianFlowSettingTab extends PluginSettingTab {
         );
     }
 
+    // ── OpenAI ───────────────────────────────────────────
     if (this.plugin.settings.aiProvider === 'openai') {
       new Setting(containerEl)
         .setName('OpenAI API Key')
-        .setDesc('Your OpenAI API key.')
+        .setDesc('OpenAI Platform API Key.')
         .addText(text => {
           text.inputEl.type = 'password';
           text
@@ -170,12 +176,11 @@ export class ObsidianFlowSettingTab extends PluginSettingTab {
 
       new Setting(containerEl)
         .setName('OpenAI Model')
-        .setDesc('Model for meeting synthesis.')
+        .setDesc('Select OpenAI Model.')
         .addDropdown(drop =>
           drop
-            .addOption('gpt-4o-mini', 'GPT-4o Mini')
+            .addOption('gpt-4o-mini', 'GPT-4o Mini (Default)')
             .addOption('gpt-4o', 'GPT-4o')
-            .addOption('o1-mini', 'o1-mini')
             .setValue(this.plugin.settings.openaiModel)
             .onChange(async val => {
               this.plugin.settings.openaiModel = val;
@@ -184,6 +189,7 @@ export class ObsidianFlowSettingTab extends PluginSettingTab {
         );
     }
 
+    // ── Ollama ───────────────────────────────────────────
     if (this.plugin.settings.aiProvider === 'ollama') {
       new Setting(containerEl)
         .setName('Ollama Endpoint')
@@ -200,7 +206,7 @@ export class ObsidianFlowSettingTab extends PluginSettingTab {
 
       new Setting(containerEl)
         .setName('Ollama Model')
-        .setDesc('Local model tag.')
+        .setDesc('Model name pulled into Ollama (e.g. llama3).')
         .addText(text =>
           text
             .setPlaceholder('llama3')

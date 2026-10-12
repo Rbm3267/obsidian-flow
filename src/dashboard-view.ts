@@ -1,11 +1,14 @@
-import { App, ItemView, WorkspaceLeaf, TFile } from 'obsidian';
+import { App, ItemView, WorkspaceLeaf } from 'obsidian';
 import { ObsidianFlowSettings } from './types';
 
-export const VIEW_TYPE_OBSIDIANFLOW_DASHBOARD = 'obsidianflow-account-dashboard';
+export const VIEW_TYPE_OBSIDIANFLOW_DASHBOARD = 'vaultflow-dashboard';
 
 export class AccountDashboardView extends ItemView {
-  constructor(leaf: WorkspaceLeaf, private settings: ObsidianFlowSettings) {
+  private settings: ObsidianFlowSettings;
+
+  constructor(leaf: WorkspaceLeaf, settings: ObsidianFlowSettings) {
     super(leaf);
+    this.settings = settings;
   }
 
   getViewType(): string {
@@ -13,11 +16,11 @@ export class AccountDashboardView extends ItemView {
   }
 
   getDisplayText(): string {
-    return 'ObsidianFlow Dashboard';
+    return 'VaultFlow Intelligence Hub';
   }
 
   getIcon(): string {
-    return 'network';
+    return 'layout-grid';
   }
 
   async onOpen(): Promise<void> {
@@ -29,14 +32,15 @@ export class AccountDashboardView extends ItemView {
     container.empty();
     container.addClass('of-dashboard-container');
 
-    const accounts = await this.getAccounts();
-    const meetings = await this.getRecentMeetings();
+    const [accounts, meetings] = await Promise.all([
+      this.getAccounts(),
+      this.getRecentMeetings(),
+    ]);
 
     // Header
     const header = container.createDiv({ cls: 'of-dashboard-header' });
-    const titleGroup = header.createDiv({ cls: 'of-header-title-group' });
-    titleGroup.createEl('h1', { text: 'Account Intelligence Hub' });
-    titleGroup.createSpan({ cls: 'of-subtitle', text: `${accounts.length} tracked accounts · ${meetings.length} meetings indexed` });
+    header.createEl('h1', { text: 'Account Intelligence' });
+    header.createSpan({ cls: 'of-header-subtitle', text: `${accounts.length} active customer profiles indexed` });
 
     // Grid of Accounts
     const grid = container.createDiv({ cls: 'of-accounts-grid' });
@@ -46,7 +50,7 @@ export class AccountDashboardView extends ItemView {
       const cardTop = card.createDiv({ cls: 'of-card-top' });
       cardTop.createEl('h3', { text: acc.name });
       
-      const badge = cardTop.createSpan({ cls: `of-health-badge of-health-${acc.health.toLowerCase()}`, text: acc.health });
+      cardTop.createSpan({ cls: `of-health-badge of-health-${acc.health.toLowerCase()}`, text: acc.health });
       
       const statsRow = card.createDiv({ cls: 'of-card-stats' });
       statsRow.createSpan({ text: `${acc.meetingCount} meetings` });
@@ -54,7 +58,7 @@ export class AccountDashboardView extends ItemView {
       statsRow.createSpan({ text: `${acc.taskCount} open tasks` });
 
       card.addEventListener('click', () => {
-        this.app.workspace.openLinkText(acc.path, '', false);
+        void this.app.workspace.openLinkText(acc.path, '', false);
       });
     }
 
@@ -68,7 +72,7 @@ export class AccountDashboardView extends ItemView {
       row.createSpan({ cls: 'of-activity-date', text: mtg.date });
       row.createSpan({ cls: 'of-activity-title', text: mtg.title });
       row.addEventListener('click', () => {
-        this.app.workspace.openLinkText(mtg.path, '', false);
+        void this.app.workspace.openLinkText(mtg.path, '', false);
       });
     }
   }
@@ -77,14 +81,14 @@ export class AccountDashboardView extends ItemView {
     const accFolder = this.settings.accountsFolder || 'Accounts';
     const files = this.app.vault.getMarkdownFiles().filter(f => f.path.startsWith(accFolder + '/'));
 
-    const result = [];
+    const result: { name: string; path: string; health: string; meetingCount: number; taskCount: number }[] = [];
     for (const file of files) {
       const cache = this.app.metadataCache.getFileCache(file);
-      const fm = cache?.frontmatter || {};
+      const fm = (cache?.frontmatter && typeof cache.frontmatter === 'object') ? cache.frontmatter : {};
       result.push({
-        name: fm.company || fm.name || file.basename,
+        name: String(fm.company || fm.name || file.basename),
         path: file.path,
-        health: fm.health || 'GREEN',
+        health: String(fm.health || 'GREEN'),
         meetingCount: 0,
         taskCount: 0,
       });
@@ -98,10 +102,10 @@ export class AccountDashboardView extends ItemView {
 
     return files.slice(0, 15).map(f => {
       const cache = this.app.metadataCache.getFileCache(f);
-      const fm = cache?.frontmatter || {};
+      const fm = (cache?.frontmatter && typeof cache.frontmatter === 'object') ? cache.frontmatter : {};
       return {
-        title: fm.title || f.basename,
-        date: fm.date || new Date(f.stat.mtime).toISOString().slice(0, 10),
+        title: String(fm.title || f.basename),
+        date: String(fm.date || new Date(f.stat.mtime).toISOString().slice(0, 10)),
         path: f.path,
       };
     });

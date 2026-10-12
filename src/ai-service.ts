@@ -1,38 +1,72 @@
 import { requestUrl } from 'obsidian';
 import { ObsidianFlowSettings, MeetingEnrichmentResult } from './types';
 
+interface GeminiCandidate {
+  content?: {
+    parts?: Array<{ text?: string }>;
+  };
+}
+
+interface GeminiResponse {
+  candidates?: GeminiCandidate[];
+}
+
+interface ClaudeContentBlock {
+  type: string;
+  text?: string;
+}
+
+interface ClaudeResponse {
+  content?: ClaudeContentBlock[];
+}
+
+interface OpenAIChoice {
+  message?: {
+    content?: string;
+  };
+}
+
+interface OpenAIResponse {
+  choices?: OpenAIChoice[];
+}
+
+interface OllamaResponse {
+  response?: string;
+}
+
 export class AIService {
-  constructor(private settings: ObsidianFlowSettings) {}
+  private settings: ObsidianFlowSettings;
+
+  constructor(settings: ObsidianFlowSettings) {
+    this.settings = settings;
+  }
 
   updateSettings(settings: ObsidianFlowSettings) {
     this.settings = settings;
   }
 
-  async synthesizeMeeting(rawText: string, filename: string): Promise<MeetingEnrichmentResult> {
-    const prompt = `You are ObsidianFlow, an intelligent executive meeting assistant.
-Analyze the following meeting transcript/notes and extract structured intelligence in valid JSON format.
-
-Meeting Source: ${filename}
-Meeting Notes/Transcript:
-${rawText}
-
-Return ONLY a valid JSON object with EXACTLY this structure (no markdown fences, no explanatory text):
+  async enrichMeeting(rawTranscript: string, filename: string): Promise<MeetingEnrichmentResult> {
+    const prompt = `You are an executive intelligence assistant. Analyze this raw meeting notes/transcript and extract key structured information.
+Return ONLY valid JSON matching this schema:
 {
-  "title": "Concise Descriptive Title",
+  "title": "Clear concise meeting title",
   "date": "YYYY-MM-DD",
-  "account": "Client/Account/Project Name if mentioned, or null",
-  "attendees": ["Full Name 1", "Full Name 2"],
-  "summary": "2-3 paragraph executive summary of the discussion",
-  "actionItems": ["Action item 1 with owner if specified", "Action item 2"],
-  "keyDecisions": ["Key strategic decision 1", "Key decision 2"],
-  "tags": ["meeting", "relevant-topic-tag"]
-}`;
+  "account": "Client or company name if mentioned, or null",
+  "attendees": ["Person 1", "Person 2"],
+  "summary": "3-4 sentence high-level executive summary",
+  "keyDecisions": ["Decision 1", "Decision 2"],
+  "actionItems": ["Action item 1 (@Owner)", "Action item 2"],
+  "tags": ["meeting", "relevant-topic"]
+}
+
+Source Content:
+${rawTranscript}`;
 
     const response = await this.queryAI(prompt);
     return this.parseJSONResponse(response, filename);
   }
 
-  async queryAI(prompt: string): Promise<string> {
+  private async queryAI(prompt: string): Promise<string> {
     switch (this.settings.aiProvider) {
       case 'gemini':
         return this.queryGemini(prompt);
@@ -50,16 +84,16 @@ Return ONLY a valid JSON object with EXACTLY this structure (no markdown fences,
   private parseJSONResponse(raw: string, fallbackTitle: string): MeetingEnrichmentResult {
     try {
       const cleaned = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```$/i, '').trim();
-      const parsed = JSON.parse(cleaned);
+      const parsed = JSON.parse(cleaned) as Record<string, unknown>;
       return {
-        title: parsed.title || fallbackTitle.replace(/\.md$/, ''),
-        date: parsed.date || new Date().toISOString().slice(0, 10),
-        account: parsed.account || undefined,
-        attendees: Array.isArray(parsed.attendees) ? parsed.attendees : [],
-        summary: parsed.summary || 'Summary unavailable.',
-        actionItems: Array.isArray(parsed.actionItems) ? parsed.actionItems : [],
-        keyDecisions: Array.isArray(parsed.keyDecisions) ? parsed.keyDecisions : [],
-        tags: Array.isArray(parsed.tags) ? parsed.tags : ['meeting'],
+        title: typeof parsed.title === 'string' ? parsed.title : fallbackTitle.replace(/\.md$/, ''),
+        date: typeof parsed.date === 'string' ? parsed.date : new Date().toISOString().slice(0, 10),
+        account: typeof parsed.account === 'string' ? parsed.account : undefined,
+        attendees: Array.isArray(parsed.attendees) ? (parsed.attendees.filter(a => typeof a === 'string') as string[]) : [],
+        summary: typeof parsed.summary === 'string' ? parsed.summary : 'Summary unavailable.',
+        actionItems: Array.isArray(parsed.actionItems) ? (parsed.actionItems.filter(a => typeof a === 'string') as string[]) : [],
+        keyDecisions: Array.isArray(parsed.keyDecisions) ? (parsed.keyDecisions.filter(d => typeof d === 'string') as string[]) : [],
+        tags: Array.isArray(parsed.tags) ? (parsed.tags.filter(t => typeof t === 'string') as string[]) : ['meeting'],
       };
     } catch {
       return {
@@ -77,7 +111,7 @@ Return ONLY a valid JSON object with EXACTLY this structure (no markdown fences,
   private async queryGemini(prompt: string): Promise<string> {
     const apiKey = this.settings.geminiApiKey.trim();
     if (!apiKey) {
-      throw new Error('Gemini API key is not configured in ObsidianFlow settings.');
+      throw new Error('Gemini API key is not configured in VaultFlow settings.');
     }
     const model = this.settings.geminiModel || 'gemini-1.5-flash';
     const res = await requestUrl({
@@ -89,13 +123,14 @@ Return ONLY a valid JSON object with EXACTLY this structure (no markdown fences,
       }),
     });
     if (res.status !== 200) throw new Error(`Gemini Error (${res.status}): ${res.text}`);
-    return res.json.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+    const data = res.json as GeminiResponse;
+    return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
   }
 
   private async queryClaude(prompt: string): Promise<string> {
     const apiKey = this.settings.claudeApiKey.trim();
     if (!apiKey) {
-      throw new Error('Claude API key is not configured in ObsidianFlow settings.');
+      throw new Error('Claude API key is not configured in VaultFlow settings.');
     }
     const model = this.settings.claudeModel || 'claude-3-5-sonnet-20241022';
     const res = await requestUrl({
@@ -114,14 +149,15 @@ Return ONLY a valid JSON object with EXACTLY this structure (no markdown fences,
       }),
     });
     if (res.status !== 200) throw new Error(`Claude Error (${res.status}): ${res.text}`);
-    const textPart = res.json.content?.find((p: { type: string; text?: string }) => p.type === 'text');
+    const data = res.json as ClaudeResponse;
+    const textPart = data.content?.find(p => p.type === 'text');
     return textPart?.text?.trim() || '';
   }
 
   private async queryOpenAI(prompt: string): Promise<string> {
     const apiKey = this.settings.openaiApiKey.trim();
     if (!apiKey) {
-      throw new Error('OpenAI API key is not configured in ObsidianFlow settings.');
+      throw new Error('OpenAI API key is not configured in VaultFlow settings.');
     }
     const model = this.settings.openaiModel || 'gpt-4o-mini';
     const res = await requestUrl({
@@ -137,7 +173,8 @@ Return ONLY a valid JSON object with EXACTLY this structure (no markdown fences,
       }),
     });
     if (res.status !== 200) throw new Error(`OpenAI Error (${res.status}): ${res.text}`);
-    return res.json.choices?.[0]?.message?.content?.trim() || '';
+    const data = res.json as OpenAIResponse;
+    return data.choices?.[0]?.message?.content?.trim() || '';
   }
 
   private async queryOllama(prompt: string): Promise<string> {
@@ -154,6 +191,7 @@ Return ONLY a valid JSON object with EXACTLY this structure (no markdown fences,
       }),
     });
     if (res.status !== 200) throw new Error(`Ollama Error (${res.status}): ${res.text}`);
-    return res.json.response?.trim() || '';
+    const data = res.json as OllamaResponse;
+    return data.response?.trim() || '';
   }
 }

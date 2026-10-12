@@ -22,35 +22,35 @@ export default class ObsidianFlowPlugin extends Plugin {
     );
 
     // Ribbon icon: quick ingest
-    this.addRibbonIcon('git-pull-request', 'ObsidianFlow: Ingest Inbox', async () => {
-      await this.processor.processInbox();
+    this.addRibbonIcon('git-pull-request', 'VaultFlow: Ingest Inbox', () => {
+      void this.processor.processInbox();
     });
 
-    // Commands
+    // Commands (Command ID does not repeat plugin ID)
     this.addCommand({
-      id: 'obsidianflow-ingest-inbox',
+      id: 'ingest-inbox',
       name: 'Ingest and Synthesize Inbox',
-      callback: async () => {
-        await this.processor.processInbox();
+      callback: () => {
+        void this.processor.processInbox();
       },
     });
 
     this.addCommand({
-      id: 'obsidianflow-open-dashboard',
+      id: 'open-hub',
       name: 'Open Account Intelligence Hub',
       callback: () => {
-        this.activateDashboard();
+        void this.activateDashboard();
       },
     });
 
     this.addCommand({
-      id: 'obsidianflow-synthesize-active',
+      id: 'synthesize-active-note',
       name: 'Synthesize Active Note with AI',
       checkCallback: (checking: boolean) => {
         const activeFile = this.app.workspace.getActiveFile();
         if (activeFile) {
           if (!checking) {
-            this.synthesizeActiveFile(activeFile);
+            void this.synthesizeActiveFile(activeFile);
           }
           return true;
         }
@@ -59,10 +59,10 @@ export default class ObsidianFlowPlugin extends Plugin {
     });
 
     // Codeblock processor for embedded card
-    this.registerMarkdownCodeBlockProcessor('obsidianflow-dashboard', (source, el, ctx) => {
+    this.registerMarkdownCodeBlockProcessor('vaultflow-dashboard', (source, el) => {
       el.empty();
       const wrap = el.createDiv({ cls: 'of-embedded-card' });
-      wrap.createEl('h4', { text: 'ObsidianFlow Intelligence' });
+      wrap.createEl('h4', { text: 'VaultFlow Intelligence' });
       wrap.createSpan({ text: 'Active intelligence context indexed.' });
     });
 
@@ -71,7 +71,7 @@ export default class ObsidianFlowPlugin extends Plugin {
   }
 
   onunload() {
-    this.app.workspace.detachLeavesOfType(VIEW_TYPE_OBSIDIANFLOW_DASHBOARD);
+    // Leave leaves in place to preserve layout location when reloaded
   }
 
   async activateDashboard() {
@@ -90,31 +90,42 @@ export default class ObsidianFlowPlugin extends Plugin {
     }
 
     if (leaf) {
-      workspace.revealLeaf(leaf);
+      workspace.setActiveLeaf(leaf, { focus: true });
     }
   }
 
   async synthesizeActiveFile(file: TFile) {
-    new Notice(`ObsidianFlow: Synthesizing ${file.basename}...`);
+    new Notice(`VaultFlow: Synthesizing ${file.basename}...`);
     try {
       const content = await this.app.vault.read(file);
-      const enriched = await this.aiService.synthesizeMeeting(content, file.name);
+      const enriched = await this.aiService.enrichMeeting(content, file.basename);
       
-      const summaryBlock = `\n\n## AI Executive Synthesis\n\n${enriched.summary}\n\n### Key Decisions\n${enriched.keyDecisions.map(d => `- ${d}`).join('\n')}\n\n### Action Items\n${enriched.actionItems.map(a => `- [ ] ${a}`).join('\n')}\n`;
-      await this.app.vault.append(file, summaryBlock);
-      new Notice(`ObsidianFlow: Synthesis appended to ${file.basename}`);
+      const frontmatter = [
+        '---',
+        `title: "${enriched.title}"`,
+        `date: "${enriched.date}"`,
+        enriched.account ? `account: "[[${enriched.account}]]"` : null,
+        `attendees: [${enriched.attendees.map(a => `"${a}"`).join(', ')}]`,
+        `tags: [${enriched.tags.join(', ')}]`,
+        '---',
+      ].filter(Boolean).join('\n');
+
+      const body = `${frontmatter}\n\n## Executive Summary\n${enriched.summary}\n\n## Key Decisions\n${enriched.keyDecisions.map(d => `- ${d}`).join('\n')}\n\n## Action Items\n${enriched.actionItems.map(a => `- [ ] ${a}`).join('\n')}\n`;
+
+      await this.app.vault.modify(file, body);
+      new Notice(`VaultFlow: Successfully enriched ${file.basename}!`);
     } catch (err: unknown) {
-      new Notice(`Synthesis failed: ${err instanceof Error ? err.message : String(err)}`);
+      new Notice(`VaultFlow Synthesis Error: ${err instanceof Error ? err.message : String(err)}`);
     }
   }
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    const loaded = await this.loadData();
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, (loaded && typeof loaded === 'object') ? loaded : {});
   }
 
   async saveSettings() {
     await this.saveData(this.settings);
     this.aiService?.updateSettings(this.settings);
-    this.processor?.updateSettings(this.settings);
   }
 }
