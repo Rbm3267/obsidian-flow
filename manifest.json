@@ -1,0 +1,11 @@
+{
+  "id": "obsidian-flow",
+  "name": "ObsidianFlow",
+  "version": "1.0.0",
+  "minAppVersion": "1.0.0",
+  "description": "Intelligent note ingestion, meeting synthesis, account intelligence, and knowledge graphs powered by your choice of LLM.",
+  "author": "XD Labs",
+  "authorUrl": "https://xdlabs.io",
+  "fundingUrl": "https://xdlabs.io",
+  "isDesktopOnly": false
+}

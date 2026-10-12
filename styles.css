@@ -1,0 +1,151 @@
+/* ═══════════════════════════════════════════════════════════════
+   ObsidianFlow — Theme-Adaptive Meeting Intelligence Dashboard
+   ═══════════════════════════════════════════════════════════════ */
+
+.of-dashboard-container {
+  padding: 24px 32px;
+  overflow-y: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background-color: var(--background-primary);
+  color: var(--text-normal);
+  font-family: var(--font-text);
+  box-sizing: border-box;
+}
+
+.of-dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.of-header-title-group h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-normal);
+  letter-spacing: -0.02em;
+}
+
+.of-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.of-accounts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.of-account-card {
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.of-account-card:hover {
+  border-color: var(--interactive-accent);
+  transform: translateY(-1px);
+}
+
+.of-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.of-card-top h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-normal);
+}
+
+.of-health-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.of-health-green {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--text-success, #10b981);
+}
+
+.of-health-amber {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--text-warning, #f59e0b);
+}
+
+.of-health-red {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--text-error, #ef4444);
+}
+
+.of-card-stats {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.of-activity-section h2 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.of-activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.of-activity-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.of-activity-row:hover {
+  background: var(--background-modifier-hover);
+  border-color: var(--interactive-accent);
+}
+
+.of-activity-date {
+  font-size: 12px;
+  font-family: var(--font-monospace);
+  color: var(--text-faint);
+}
+
+.of-activity-title {
+  font-size: 13px;
+  color: var(--text-normal);
+  font-weight: 500;
+  flex: 1;
+}
+
+.of-embedded-card {
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--background-secondary);
+  border-left: 3px solid var(--interactive-accent);
+}
