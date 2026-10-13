@@ -1,6 +1,7 @@
 import { App, TFile, Notice } from 'obsidian';
 import { ObsidianFlowSettings, MeetingEnrichmentResult } from './types';
 import { AIService } from './ai-service';
+import { getMarkdownFilesUnderFolder } from './vault-utils';
 
 export class IngestionProcessor {
   private app: App;
@@ -22,7 +23,7 @@ export class IngestionProcessor {
       return 0;
     }
 
-    const files = this.app.vault.getMarkdownFiles().filter(f => f.path.startsWith(inboxFolder + '/'));
+    const files = getMarkdownFilesUnderFolder(this.app.vault, inboxFolder);
     if (files.length === 0) {
       new Notice('VaultFlow: Inbox is clear. No notes to process.');
       return 0;

@@ -1,5 +1,6 @@
 import { ItemView, WorkspaceLeaf } from 'obsidian';
 import { ObsidianFlowSettings } from './types';
+import { getMarkdownFilesUnderFolder } from './vault-utils';
 
 export const VIEW_TYPE_OBSIDIANFLOW_DASHBOARD = 'vaultflow-dashboard';
 
@@ -79,7 +80,7 @@ export class AccountDashboardView extends ItemView {
 
   private async getAccounts(): Promise<{ name: string; path: string; health: string; meetingCount: number; taskCount: number }[]> {
     const accFolder = this.settings.accountsFolder || 'Accounts';
-    const files = this.app.vault.getMarkdownFiles().filter(f => f.path.startsWith(accFolder + '/'));
+    const files = getMarkdownFilesUnderFolder(this.app.vault, accFolder);
 
     const result: { name: string; path: string; health: string; meetingCount: number; taskCount: number }[] = [];
     for (const file of files) {
@@ -98,7 +99,7 @@ export class AccountDashboardView extends ItemView {
 
   private async getRecentMeetings(): Promise<{ title: string; date: string; path: string }[]> {
     const meetFolder = this.settings.meetingsFolder || 'raw/meetings';
-    const files = this.app.vault.getMarkdownFiles().filter(f => f.path.startsWith(meetFolder + '/'));
+    const files = getMarkdownFilesUnderFolder(this.app.vault, meetFolder);
 
     return files.slice(0, 15).map(f => {
       const cache = this.app.metadataCache.getFileCache(f);

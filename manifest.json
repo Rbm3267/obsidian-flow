@@ -1,7 +1,7 @@
 {
   "id": "vaultflow",
   "name": "VaultFlow",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "minAppVersion": "1.13.0",
   "description": "Intelligent note ingestion, meeting synthesis, account intelligence, and knowledge graphs powered by your choice of LLM.",
   "author": "XD Labs",
